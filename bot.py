@@ -69,18 +69,25 @@ async def save_image(interaction: discord.Interaction, image_file: discord.Attac
 @bot.tree.command(name="clear_image_folder", description="Removes all images from the image folder on the server.")
 async def clear_image_folder(interaction: discord.Interaction):
     if interaction.user.id == OWNER_ID:
-            folder = 'images'
-            for filename in os.listdir(folder):
-                file_path = os.path.join(folder, filename)
-                try:
-                    if os.path.isfile(file_path) or os.path.islink(file_path):
-                        os.unlink(file_path)
-                    elif os.path.isdir(file_path):
-                        shutil.rmtree(file_path)
-                except Exception as e:
-                    print('Failed to delete %s. Reason: %s' % (file_path, e))
+        isGitKeep = False 
+        folder = 'images'
+        for filename in os.listdir(folder):
+            if filename == '.gitkeep':
+                isGitKeep = True
 
-            await interaction.response.send_message("Image folder cleared.")
+            file_path = os.path.join(folder, filename)
+            try:
+                if os.path.isfile(file_path) or os.path.islink(file_path):
+                    if not isGitKeep:
+                        os.unlink(file_path)
+                elif os.path.isdir(file_path):
+                    shutil.rmtree(file_path)
+            except Exception as e:
+                print('Failed to delete %s. Reason: %s' % (file_path, e))
+
+            isGitKeep = False
+
+        await interaction.response.send_message("Image folder cleared.")
     else:
         await interaction.response.send_message("You must be the owner to use this command!")
     
