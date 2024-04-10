@@ -1,3 +1,12 @@
 # Private Environment Variables #
 #################################
 *.env
+
+
+
+
+
+# exclude image folder contents
+images/*
+# except the gitkeep so that the (almost) empty folder is commited to git.
+!images/.gitkeep 

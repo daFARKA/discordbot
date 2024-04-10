@@ -1,4 +1,5 @@
 import os
+import shutil
 from dotenv import load_dotenv
 
 import discord
@@ -6,6 +7,7 @@ from discord import app_commands
 from discord.ext import commands
 
 import random
+from datetime import datetime
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -38,10 +40,50 @@ async def sync(interaction: discord.Interaction):
 async def test(interaction: discord.Interaction):
     await interaction.response.send_message("test!")
 
+@bot.tree.command(name="color", description="Choose color.")
+@app_commands.describe(colors="Colors to choose from.")
+@app_commands.choices(colors=[
+    app_commands.Choice(name="blue", value=1),
+    app_commands.Choice(name="red", value=2),
+    app_commands.Choice(name="green", value=3)
+])
+async def color(interaction: discord.Interaction, colors: app_commands.Choice[int]):
+    await interaction.response.send_message(f"{interaction.user.name} picked {colors.name}")
+
 @bot.tree.command(name="rand_int", description="Returns a pseudo random Integer ∈ [lower_bound, upper_bound].")
 async def rand_int(interaction: discord.Interaction, lower_bound: int, upper_bound: int):
     randomInt = random.randint(lower_bound, upper_bound)
     await interaction.response.send_message(f"Random number generated: {randomInt}")
+
+@bot.tree.command(name="save_image", description="Saves the image in the attachment on the server.")
+@app_commands.describe(image_file = "Drag the image here.")
+async def save_image(interaction: discord.Interaction, image_file: discord.Attachment):
+    if interaction.user.id == OWNER_ID:
+        imageName = datetime.now().strftime('%d.%m.%Y_%H.%M.%S')
+        fileName = 'images/' + imageName + '.jpg'
+        await image_file.save(fileName)
+        await interaction.response.send_message(imageName + " saved to server.")
+    else:
+        await interaction.response.send_message("You must be the owner to use this command!")
+
+@bot.tree.command(name="clear_image_folder", description="Removes all images from the image folder on the server.")
+async def clear_image_folder(interaction: discord.Interaction):
+    if interaction.user.id == OWNER_ID:
+            folder = 'images'
+            for filename in os.listdir(folder):
+                file_path = os.path.join(folder, filename)
+                try:
+                    if os.path.isfile(file_path) or os.path.islink(file_path):
+                        os.unlink(file_path)
+                    elif os.path.isdir(file_path):
+                        shutil.rmtree(file_path)
+                except Exception as e:
+                    print('Failed to delete %s. Reason: %s' % (file_path, e))
+
+            await interaction.response.send_message("Image folder cleared.")
+    else:
+        await interaction.response.send_message("You must be the owner to use this command!")
+    
 
 @bot.tree.command(name="listcommands", description="Prints a list of all bot commands.")
 async def listcommands(interaction: discord.Interaction):
