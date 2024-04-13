@@ -1,12 +1,20 @@
-# Private Environment Variables #
-#################################
+# Private Environment Variables
 *.env
 
+# Pytesseract docs I found online
+pytesseract_docs.txt
 
+# Token for the Google Calender
+token.json
 
+# PyCache
+__pycache__/*
 
-
-# exclude image folder contents
+# exclude folder contents
 images/*
+testimages/*
+slices/*
+private/*
 # except the gitkeep so that the (almost) empty folder is commited to git.
-!images/.gitkeep 
+!images/.gitkeep
+!splices/.gitkeep
