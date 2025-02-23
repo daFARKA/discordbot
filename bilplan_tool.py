@@ -37,12 +37,12 @@ def find_template_occurrences(image_path, template_path, threshold):
     for match in matches:
         cv2.rectangle(img, (match[0], match[1]), (match[2], match[3]), (0, 255, 0), 2)
 
-    '''
+    
     resized_img = cv2.resize(img, (1920, 1080))
     cv2.imshow('Matches', resized_img)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
-    '''
+    
     
     return matches
 
@@ -202,7 +202,7 @@ def create_calendar_events():
         if time == 'missing':
             return
         else:
-            calendar_tool.create_event_today("Test", cinema_nr, time)
+            calendar_tool.create_event_today("Einlass", cinema_nr, time)
 
 
 '''
@@ -255,4 +255,5 @@ def analyze_bilplan(image_path):
     return bilplan_global
 
 
+#find_template_occurrences('testimages/test1.jpg', 'testimages/Farka-template-scan.jpg', 0.75)
 #analyze_bilplan('testimages/test1.jpg')

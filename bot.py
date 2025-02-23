@@ -160,6 +160,13 @@ async def create_calendar_event(interaction: discord.Interaction, name: str, cin
     else:
         await interaction.response.send_message("You must be the owner to use this command!")   
 
+@bot.tree.command(name="shutdown", description="Shutsdown server!")
+async def shutdown(interaction: discord.Interaction):
+    if interaction.user.id == OWNER_ID:
+        os.system("shutdown /s /t 1")
+    else:
+        await interaction.response.send_message("You must be the owner to use this command!")   
+
 
 @bot.tree.command(name="listcommands", description="Prints a list of all bot commands.")
 async def listcommands(interaction: discord.Interaction):
